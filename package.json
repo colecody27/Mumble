@@ -1,10 +1,11 @@
 {
   "name": "instant_messenger",
   "version": "1.0.0",
-  "description": "",
+  "description": "Instant messenger application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/colecody27/instant-messenger/issues"
   },
-  "homepage": "https://github.com/colecody27/instant-messenger#readme"
+  "homepage": "https://github.com/colecody27/instant-messenger#readme",
+  "dependencies": {
+    "socket.io": "^4.7.4"
+  }
 }
