@@ -1,0 +1,19 @@
+{
+  "name": "instant_messenger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colecody27/instant-messenger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/colecody27/instant-messenger/issues"
+  },
+  "homepage": "https://github.com/colecody27/instant-messenger#readme"
+}
