@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const express = require('express');
-// const path = require('path')
+
+// Configure application
 const app = express(); 
+app.set('view engine', 'ejs')
+app.use(express.json())
+app.use(express.urlencoded({extended :false}))
 
 // Connect to DB
 const dbURI = 'mongodb+srv://colecody27:password1234@cluster0.exzeuin.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
@@ -14,11 +18,6 @@ mongoose
   )
   .catch((error) => console.log(error));
 
-// Configure application
-app.set('view engine', 'ejs')
-app.use(express.json())
-app.use(express.urlencoded({extended :false}))
-
 // Routes
 const userRoutes = require('./src/routes/user');
 app.use('/api/user', userRoutes)
@@ -27,7 +26,6 @@ app.use('/api/user', userRoutes)
 app.get('/login', (req, res) => {
     res.render('login.ejs')
 })
-
 app.get('/register', (req, res) => {
     res.render('register.ejs')
 })

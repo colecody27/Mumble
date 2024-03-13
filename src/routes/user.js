@@ -12,11 +12,39 @@ router.post("/register", async (req, res) => {
             email: req.body.email,
             password: newPassword
         })
-
-        res.status(200).send("User Added to the Database")
+        res.redirect('/login')
     }
     catch(err){
         res.json({staus:'error', error: 'Duplicate email'})
+    }
+})
+
+router.post('/login', async (req, res) => {
+    const user = await User.findOne({
+        email: req.body.email
+    })
+
+    if(!user){
+        return res.json({status: 'error', error: 'Invalid Login'})
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+        req.body.password,
+        user.password
+    )
+
+    if(isPasswordValid){
+        const token = jwt.sign(
+            {
+                name: user.name,
+                email: user.email
+            },
+            'secret123'
+        )
+
+        return res.json({status:'Ok', user:token})
+    }else{
+        return res.json({status: 'error', user: false})
     }
 })
 
