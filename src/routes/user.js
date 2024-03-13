@@ -42,7 +42,10 @@ router.post('/login', async (req, res) => {
             'secret123'
         )
 
-        return res.json({status:'Ok', user:token})
+        return res.cookie("access_token", token, {
+            httpOnly: true
+        }).status(200)
+        .json({ message: "Logged in successfully 😊 👌" })
     }else{
         return res.json({status: 'error', user: false})
     }
