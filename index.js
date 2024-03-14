@@ -20,13 +20,23 @@ mongoose
 
 // Routes
 const userRoutes = require('./src/routes/user');
+const channelRoutes = require('./src/routes/channel');
 app.use('/api/user', userRoutes)
+app.use('/api/channels', channelRoutes)
 
-// Pages
+// Login Page 
 app.get('/login', (req, res) => {
     res.render('login.ejs')
 })
+// Register Page 
 app.get('/register', (req, res) => {
     res.render('register.ejs')
 })
-
+// Channels Page 
+app.get('/channels', (req, res) => {
+    res.render('channels.ejs', {channels: req.body[0]})
+})
+// Channel Page 
+app.get('/channel', (req, res) => {
+  res.render('channel.ejs')
+})
