@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const http = require('http')
 const { Server } = require("socket.io");
 
@@ -9,6 +10,7 @@ const server = http.createServer(app);
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.urlencoded({extended :false}))
+app.use(cookieParser())
 
 // Socket setup 
 const io = new Server(server);
@@ -40,6 +42,19 @@ const channelRoutes = require('./src/routes/channel');
 app.use('/api/user', userRoutes)
 app.use('/api/channels', channelRoutes)
 
+async function validateCookie(req, res, next) {
+  const token = req.cookies.access_token
+
+  if (token == null) return res.sendStatus(401)
+
+  try{
+    const decoded = jwt.verify(token, 'secret123')
+    const email = decoded.email
+    next()
+}catch(error){
+    return res.json({status:'error', error:'Invalid Token'})
+}}
+
 // Login Page 
 app.get('/login', (req, res) => {
     res.render('login.ejs')
@@ -48,12 +63,11 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register.ejs')
 })
-// Channels Page 
-app.get('/channels', (req, res) => {
-    res.render('channels.ejs', {channels: req.body[0]})
-})
+// // Channels Page 
+// app.get('/channels', (req, res) => {
+//     res.render('channels.ejs', {channels: req.body[0]})
+// })
 // Channel Page 
-app.get('/channel', (req, res) => {
-  // res.sendFile(__dirname + '/views/index.html')
+app.get('/channel', validateCookie, (req, res) => {
   res.render('channel.ejs')
 })

@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
         return res.cookie("access_token", token, {
             httpOnly: true
         }).status(200)
-        .json({ message: "Logged in successfully 😊 👌" })
+        .redirect('/api/channels')
     }else{
         return res.json({status: 'error', user: false})
     }
