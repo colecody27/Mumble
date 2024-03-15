@@ -55,6 +55,18 @@ async function validateCookie(req, res, next) {
     return res.json({status:'error', error:'Invalid Tokens'})
 }}
 
+async function validateCookies(req, res, next) {
+  const token = req.cookies.access_token
+
+  if (token == null) return res.sendStatus(401)
+
+  try{
+    const decoded = jwt.verify(token, 'secret123')
+    next()
+}catch(error){
+    return res.json({status:'error', error:'Invalid Tokens'})
+}}
+
 // Login Page 
 app.get('/login', (req, res) => {
     res.render('login.ejs')
