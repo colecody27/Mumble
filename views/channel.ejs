@@ -24,8 +24,15 @@
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io();
+      // console.log("Room:" + room)
+        var socket = io({query: {
+          room: '<%= id %>'
+        }})
 
+        // socket.on('conencted', () => {
+        //   socket.emit('joinRoom', room)
+        // })
+        
         var form = document.getElementById('form');
         var input = document.getElementById('input');
 

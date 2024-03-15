@@ -16,10 +16,16 @@ app.use(cookieParser())
 // Socket setup 
 const io = new Server(server);
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  const room = socket.handshake.query.room
+  console.log('a user connected ' + room);
+  socket.join(room)
+
+  // Send message
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
   });
+
+  // Disconnect
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

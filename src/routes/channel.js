@@ -56,7 +56,7 @@ router.get('/:id', validateCookie, async (req, res) => {
     if (!users.includes(email))
         res.send("Unauthorized to access this channel")
     else {
-        res.render('channel.ejs')
+        res.render('channel.ejs', {id:id })
     }
 
 })
