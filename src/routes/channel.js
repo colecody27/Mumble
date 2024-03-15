@@ -18,13 +18,17 @@ async function validateCookie(req, res, next) {
 }}
 
 router.get('/', validateCookie, async (req, res) => {
-    // const authHeader = req.headers['authorization']
-    // console.log(authHeader)
-    // Authenticate user
-    // console.log(req.cookies.access_token)
+    const token = req.cookies.access_token
+
+    const decoded = jwt.verify(token, 'secret123')
+    const email = decoded.email
+
+    // Get user's channels
+    const adminChannels = await User.find({email: email}, 'channels')
+
     const channels = await Channel.find({});
     // const adminChannels = await User.find({});
-    res.render('channels.ejs', {channels: channels})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels})
 })
 
 module.exports = router

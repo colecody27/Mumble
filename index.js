@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const http = require('http')
 const { Server } = require("socket.io");
+const jwt = require('jsonwebtoken');
 
 // Configure application
 const app = express(); 
@@ -49,10 +50,9 @@ async function validateCookie(req, res, next) {
 
   try{
     const decoded = jwt.verify(token, 'secret123')
-    const email = decoded.email
     next()
 }catch(error){
-    return res.json({status:'error', error:'Invalid Token'})
+    return res.json({status:'error', error:'Invalid Tokens'})
 }}
 
 // Login Page 
@@ -63,10 +63,6 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register.ejs')
 })
-// // Channels Page 
-// app.get('/channels', (req, res) => {
-//     res.render('channels.ejs', {channels: req.body[0]})
-// })
 // Channel Page 
 app.get('/channel', validateCookie, (req, res) => {
   res.render('channel.ejs')
