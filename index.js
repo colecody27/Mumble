@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const http = require('http')
 const { Server } = require("socket.io");
 const jwt = require('jsonwebtoken');
+const Channel = require('./src/models/channel')
 
 // Configure application
 const app = express(); 
@@ -15,13 +16,17 @@ app.use(cookieParser())
 
 // Socket setup 
 const io = new Server(server);
-io.on('connection', (socket) => {
-  const room = socket.handshake.query.room
-  console.log('a user connected ' + room);
-  socket.join(room)
+io.on('connection', async (socket) => {
+  const roomId = socket.handshake.query.room
+  console.log('a user connected ' + roomId);
+  socket.join(roomId)
 
   // Send message
-  socket.on('chat message', (msg) => {
+  socket.on('chat message', async (msg) => {
+    // Store message
+    const doc = await Channel.findById(roomId)
+    doc.messages.push({'sender': 'sender1', 'message': msg})
+    await doc.save();
     io.emit('chat message', msg);
   });
 
