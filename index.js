@@ -18,7 +18,7 @@ app.use(cookieParser())
 const io = new Server(server);
 io.on('connection', async (socket) => {
   const roomId = socket.handshake.query.room
-  console.log('a user connected to room ' + roomId);
+  console.log('User connected to room ' + roomId);
   socket.join(roomId)
 
   // Send message

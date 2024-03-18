@@ -35,12 +35,13 @@ router.get('/', validateCookie, async (req, res) => {
 
     const decoded = jwt.verify(token, 'secret123')
     const email = decoded.email
+    const username = decoded.name
 
     // Get channels
     const adminChannels = await User.find({email: email}, 'channels')
     const channels = await Channel.find({});
 
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
 })
 
 router.post('/create', validateCookie, async (req, res) => {
@@ -108,7 +109,7 @@ router.get('/:id', validateCookie, async (req, res) => {
     const decoded = jwt.verify(token, 'secret123')
     const email = decoded.email
     const name = decoded.name 
-
+    console.log(channelQuery)
     if (!users.includes(email))
         res.send("Unauthorized to access this channel")
     else {

@@ -18,7 +18,11 @@
       </style>
 </head>
 <body>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      <% for(var i=0; i < channel.messages.length; i++) { %>
+        <li> <%= `${channel.messages[i].sender}: ${channel.messages[i].message}` %> </li>
+      <% } %>
+    </ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
@@ -31,20 +35,28 @@
 
         var form = document.getElementById('form');
         var input = document.getElementById('input');
+        
+
+        // for (let i = 0; i < msgHistory.length; i++) {
+        //   var item = document.createElement('li');
+        //   item.textContent = `${msgHistory[i].sender}: ${msgHistory[i].message}`;
+        //   messages.appendChild(item);
+        //   window.scrollTo(0, document.body.scrollHeight);
+        // }
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (input.value) {
-            socket.emit('chat message', {msg: input.value, username: '<%= username %>'});
-            input.value = '';
-            }
+          e.preventDefault();
+          if (input.value) {
+          socket.emit('chat message', {msg: input.value, username: '<%= username %>'});
+          input.value = '';
+          }
         });
 
         socket.on('chat message', function({msg, username}) {
-            var item = document.createElement('li');
-            item.textContent = `${username}: ${msg}`;
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
+          var item = document.createElement('li');
+          item.textContent = `${username}: ${msg}`;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
         });
     </script>
   </body>
