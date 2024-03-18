@@ -7,8 +7,8 @@ const channel = new Schema({
 })
 
 const channelSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    admin: {type: String, required: true, unique: true},
+    name: {type: String, required: true, unique: true},
+    admin: {type: String, required: true},
     users: {type: [String], required: true},
     messages: {type: [channel], required: false}
     },{

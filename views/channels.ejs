@@ -20,15 +20,35 @@
         </ul>
     </div>
 
-    <div>
+    <div >
         <h1>Your Channels</h1>
-        <ul>
-            <% for(var i=0; i < adminChannels.length; i++) { %>
-                <li>
-                    <a href="../channel"><%= adminChannels[i] %></a>
-                </li>
-            <% } %>
-        </ul>
+        <div style="display: inline-block; margin-right: 20%;">
+            <ul>
+                <% for(var i=0; i < adminChannels.length; i++) { %>
+                    <li>
+                        <a style="display: inline-block" href="<%= `/api/channels/${adminChannels[i].id}` %>"><%= adminChannels[i].name %></a>
+                        <form action= "<%= `/api/channels/delete/${adminChannels[i].id}` %>" method="DELETE" style="display: inline-block">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+        <div style="display: inline-block">
+            <h2 style="margin:0">Create Channel</h2>
+            <form action="/api/channels/create" method="POST">
+                <!-- Name -->
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+
+                 <!-- Users -->
+                 <label for="users">Users</label>
+                 <input type="text" id="users" name="users" placeholder="Ex: john@example.com, doe@example.com">
+                 
+                 <button type="submit">Create</button>
+            </form>
+        </div>
+
     </div>
     
 </body>

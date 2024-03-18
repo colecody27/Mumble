@@ -1,10 +1,16 @@
 const mongoose = require('mongoose')
+const { Schema } = mongoose;
+
+const channel = new Schema({
+    name: {type: String, required: true}, 
+    id: {type: String, required: true}, 
+})
 
 const userSchema = new mongoose.Schema({
     name: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    channels: {type: [String], required: false}
+    channels: {type: [channel], required: false}
     },{
     collection: 'users'
 })

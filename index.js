@@ -18,16 +18,19 @@ app.use(cookieParser())
 const io = new Server(server);
 io.on('connection', async (socket) => {
   const roomId = socket.handshake.query.room
-  console.log('a user connected ' + roomId);
+  console.log('a user connected to room ' + roomId);
   socket.join(roomId)
 
   // Send message
-  socket.on('chat message', async (msg) => {
+  socket.on('chat message', async ({msg, username}) => {
     // Store message
     const doc = await Channel.findById(roomId)
-    doc.messages.push({'sender': 'sender1', 'message': msg})
+    doc.messages.push({'sender': username, 'message': msg})
     await doc.save();
-    io.emit('chat message', msg);
+
+    // Emit message 
+    io.emit('chat message', {msg: msg, username: username});
+    console.log(`User ${username} sent: ${msg}`)
   });
 
   // Disconnect
