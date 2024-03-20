@@ -81,7 +81,7 @@ async function validateCookies(req, res, next) {
 }}
 
 // Login Page 
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
     res.render('login.ejs')
 })
 // Register Page 
