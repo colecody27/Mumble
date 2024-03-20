@@ -19,6 +19,7 @@
 </head>
 <body>
     <ul id="messages">
+      <!-- Load message history -->
       <% for(var i=0; i < channel.messages.length; i++) { %>
         <li> <%= `${channel.messages[i].sender}: ${channel.messages[i].message}` %> </li>
       <% } %>
@@ -36,14 +37,6 @@
         var form = document.getElementById('form');
         var input = document.getElementById('input');
         
-
-        // for (let i = 0; i < msgHistory.length; i++) {
-        //   var item = document.createElement('li');
-        //   item.textContent = `${msgHistory[i].sender}: ${msgHistory[i].message}`;
-        //   messages.appendChild(item);
-        //   window.scrollTo(0, document.body.scrollHeight);
-        // }
-
         form.addEventListener('submit', function(e) {
           e.preventDefault();
           if (input.value) {

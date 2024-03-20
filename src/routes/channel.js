@@ -36,18 +36,26 @@ router.get('/', validateCookie, async (req, res) => {
     const decoded = jwt.verify(token, 'secret123')
     const email = decoded.email
     const username = decoded.name
-
-    // Get channels
-    const adminChannels = await User.find({email: email}, 'channels')
     const channels = await Channel.find({});
 
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
+    // If user is Admin DB, provide exghaustive list of channels. If not, provide list of user's channels
+    const userQuery = await User.find({email: email})
+    let adminChannels
+    if (userQuery[0].isDbAdmin == true ) 
+        adminChannels = await Channel.find({}, 'name id')  
+    else {
+        const query = await User.find({email: email}, 'channels')
+        adminChannels = query[0].channels
+    }
+        
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels, username: username})
 })
 
 router.post('/create', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
 
     const decoded = jwt.verify(token, 'secret123')
+    const username = decoded.name
     const email = decoded.email
 
     // Get list of users and add admins
@@ -74,7 +82,7 @@ router.post('/create', validateCookie, async (req, res) => {
     const adminChannels = await User.find({email: email}, 'channels')
     const channels = await Channel.find({});
 
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
 })
 
 router.get('/delete/:id', validateCookie, async (req, res) => {
@@ -82,6 +90,7 @@ router.get('/delete/:id', validateCookie, async (req, res) => {
 
     const decoded = jwt.verify(token, 'secret123')
     const email = decoded.email
+    const username = decoded.name
     const id = req.params.id
 
     // Delete channel with name and admin equal to email 
@@ -96,7 +105,7 @@ router.get('/delete/:id', validateCookie, async (req, res) => {
     const adminChannels = await User.find({email: email}, 'channels')
     const channels = await Channel.find({});
     
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
 })
 
 router.get('/:id', validateCookie, async (req, res) => {
@@ -109,7 +118,7 @@ router.get('/:id', validateCookie, async (req, res) => {
     const decoded = jwt.verify(token, 'secret123')
     const email = decoded.email
     const name = decoded.name 
-    console.log(channelQuery)
+
     if (!users.includes(email))
         res.send("Unauthorized to access this channel")
     else {
