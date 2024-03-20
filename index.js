@@ -5,6 +5,7 @@ const http = require('http')
 const { Server } = require("socket.io");
 const jwt = require('jsonwebtoken');
 const Channel = require('./src/models/channel')
+require('dotenv').config()
 
 // Configure application
 const app = express(); 
@@ -13,6 +14,16 @@ app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.urlencoded({extended :false}))
 app.use(cookieParser())
+
+// Connect to DB
+mongoose
+  .connect(process.env.DB_URL)
+  .then((result) =>
+    server.listen(3000, (req, res) => {
+      console.log("Connected to DB listening on port 3000");
+    })
+  )
+  .catch((error) => console.log(error));
 
 // Socket setup 
 const io = new Server(server);
@@ -39,18 +50,6 @@ io.on('connection', async (socket) => {
   });
 });
 
-
-// Connect to DB
-const dbURI = 'mongodb+srv://colecody27:password1234@cluster0.exzeuin.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-mongoose
-  .connect(dbURI)
-  .then((result) =>
-    server.listen(3000, (req, res) => {
-      console.log("Connected to DB listening on port 3000");
-    })
-  )
-  .catch((error) => console.log(error));
-
 // Routes
 const userRoutes = require('./src/routes/user');
 const channelRoutes = require('./src/routes/channel');
@@ -63,7 +62,7 @@ async function validateCookie(req, res, next) {
   if (token == null) return res.sendStatus(401)
 
   try{
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     next()
 }catch(error){
     return res.json({status:'error', error:'Invalid Tokens'})
@@ -75,7 +74,7 @@ async function validateCookies(req, res, next) {
   if (token == null) return res.sendStatus(401)
 
   try{
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     next()
 }catch(error){
     return res.json({status:'error', error:'Invalid Tokens'})

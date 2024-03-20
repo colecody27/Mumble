@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email
             },
-            'secret123'
+            process.env.SALT
         )
 
         return res.cookie("access_token", token, {

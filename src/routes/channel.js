@@ -11,7 +11,7 @@ async function validateCookie(req, res, next) {
     if (token == null) return res.sendStatus(401)
   
     try{
-      const decoded = jwt.verify(token, 'secret123')
+      const decoded = jwt.verify(token, process.env.SALT)
       const email = decoded.email
       next()
   }catch(error){
@@ -22,7 +22,7 @@ async function validateChannel(req, res, next) {
     const token = req.cookies.access_token
   
     try{
-      const decoded = jwt.verify(token, 'secret123')
+      const decoded = jwt.verify(token, process.env.SALT)
       const email = decoded.email
       
       next()
@@ -33,7 +33,7 @@ async function validateChannel(req, res, next) {
 router.get('/', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
 
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     const email = decoded.email
     const username = decoded.name
     const channels = await Channel.find({});
@@ -54,7 +54,7 @@ router.get('/', validateCookie, async (req, res) => {
 router.post('/create', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
 
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     const username = decoded.name
     const email = decoded.email
 
@@ -62,10 +62,16 @@ router.post('/create', validateCookie, async (req, res) => {
     const users = req.body.users.split(', ')
     users.push('colecody27@gmail.com')
     users.push(email)
+    const channelName = req.body.name
+
+    // Verify that channel name doesn't exist
+    const channelNames = await Channel.find({}, 'name')
+    if (channelNames.some((obj) => obj.name === channelName))
+        return res.json({status:'error', error:'Duplicate channel name'})
 
     // Seperate users on commas
     await Channel.create({
-        name: req.body.name,
+        name: channelName,
         admin: email,
         users: users,
         messages: []
@@ -73,9 +79,9 @@ router.post('/create', validateCookie, async (req, res) => {
 
     // Update user's list of channels 
     const userDoc = await User.findOne({email: email})
-    const channelQuery = await Channel.findOne({admin: email, name: req.body.name})
+    const channelQuery = await Channel.findOne({admin: email, name: channelName})
     const channelId = channelQuery._id.toString()
-    userDoc.channels.push({name: req.body.name, id: channelId})
+    userDoc.channels.push({name: channelName, id: channelId})
     await userDoc.save()
 
     // Get channels
@@ -88,7 +94,7 @@ router.post('/create', validateCookie, async (req, res) => {
 router.get('/delete/:id', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
 
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     const email = decoded.email
     const username = decoded.name
     const id = req.params.id
@@ -115,7 +121,7 @@ router.get('/:id', validateCookie, async (req, res) => {
     // Confirm user has access to channel
     const channelQuery = await Channel.findById(id)
     const {users} = channelQuery
-    const decoded = jwt.verify(token, 'secret123')
+    const decoded = jwt.verify(token, process.env.SALT)
     const email = decoded.email
     const name = decoded.name 
 
