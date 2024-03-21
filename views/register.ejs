@@ -1,20 +1,111 @@
-<h1>Register</h1>
+<body>
+  <div class="container">
+    <h1>Register for our instant messenger!</h1>
 
-<form action="/api/user/register" method="POST">
-    <div>
+    <form action="/api/user/register" method="POST">
+      <div>
         <!-- Username -->
         <label for="username">Name</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" required />
 
-         <!-- Email -->
-         <label for="email">Email</label>
-         <input type="text" id="email" name="email" required>
+        <!-- Email -->
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" required />
 
         <!-- Password -->
         <label for="password">Password</label>
-        <input type="text" id="password" name="password" required>
-    </div>
-    <button type="submit">Register</button>
-</form>
- 
-<a href="/">Login</a>
+        <input type="text" id="password" name="password" required />
+      </div>
+      <button type="submit">Register</button>
+    </form>
+    <a class="login-button" href="/">Back to Login Page</a>
+  </div>
+</body>
+<style>
+  body {
+    font-family: "Arial", sans-serif;
+    background-color: #36393f; /* Discord's dark grey */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  form {
+    background-color: #2f3136; /* Discord's lighter grey */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  h1 {
+    color: #7289da; /* Discord's blue */
+
+    text-align: center;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #40444b;
+    color: #ffffff;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #7289da; /* Discord's blue */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  button:hover {
+    background-color: #5b6dad;
+  }
+
+  a {
+    color: #7289da; /* Link color */
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  a:hover {
+    text-decoration: none;
+    color: #5b6dad;
+  }
+  /* ... existing styles ... */
+
+  .login-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #40444b; /* Slightly different color for distinction */
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .login-button:hover {
+    background-color: #565b63; /* Slightly lighter on hover */
+  }
+
+  /* ... rest of your styles ... */
+</style>
