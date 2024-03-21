@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/login", async (req, res) => {
-  res.clearCookie("access_token").redirect("/login");
+  res.clearCookie("access_token").redirect("/");
 });
 
 module.exports = router;
