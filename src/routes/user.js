@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
             email: req.body.email,
             password: newPassword
         })
-        res.redirect('/login')
+        res.redirect('/')
     }
     catch(err){
         res.json({staus:'error', error: 'Duplicate email'})
@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/login', async (req, res) => {
-    res.clearCookie('access_token').redirect('/login')
+    res.clearCookie('access_token').redirect('/')
 })
 
 module.exports = router;
