@@ -18,18 +18,6 @@ async function validateCookie(req, res, next) {
       return res.json({status:'error', error:'Invalid Token'})
 }}
 
-async function validateChannel(req, res, next) {
-    const token = req.cookies.access_token
-  
-    try{
-      const decoded = jwt.verify(token, process.env.SALT)
-      const email = decoded.email
-      
-      next()
-  }catch(error){
-      return res.json({status:'error', error:'Invalid access to channel'})
-}}
-
 router.get('/', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
 
@@ -57,11 +45,6 @@ router.post('/create', validateCookie, async (req, res) => {
     const decoded = jwt.verify(token, process.env.SALT)
     const username = decoded.name
     const email = decoded.email
-
-    // Get list of users and add admins
-    const users = req.body.users.split(', ')
-    users.push('colecody27@gmail.com')
-    users.push(email)
     const channelName = req.body.name
 
     // Verify that channel name doesn't exist
@@ -69,7 +52,20 @@ router.post('/create', validateCookie, async (req, res) => {
     if (channelNames.some((obj) => obj.name === channelName))
         return res.json({status:'error', error:'Duplicate channel name'})
 
-    // Seperate users on commas
+    // If user is DB admin, get all users and channels
+    const userQuery = await User.findOne({email: email})
+    let adminChannels 
+    let users
+    console.log("User query:" + userQuery)
+    if (userQuery.isDbAdmin){
+        users = await User.find({}, 'email')
+    }
+    else {
+        users = req.body.users.split(', ')
+        users.push(email)
+    }
+    
+    // Create new channel
     await Channel.create({
         name: channelName,
         admin: email,
@@ -78,17 +74,18 @@ router.post('/create', validateCookie, async (req, res) => {
     })
 
     // Update user's list of channels 
-    const userDoc = await User.findOne({email: email})
-    const channelQuery = await Channel.findOne({admin: email, name: channelName})
-    const channelId = channelQuery._id.toString()
-    userDoc.channels.push({name: channelName, id: channelId})
-    await userDoc.save()
+    if (!userQuery.isDbAdmin){
+        const channelQuery = await Channel.findOne({admin: email, name: channelName})
+        const channelId = channelQuery._id.toString()
+        userQuery.channels.push({name: channelName, id: channelId})
+        await userQuery.save()
+        adminChannels = userQuery.channels
+    } else
+        adminChannels = await Channel.find({}, 'name id') 
 
-    // Get channels
-    const adminChannels = await User.find({email: email}, 'channels')
+    console.log("Admin channels: " + adminChannels)
     const channels = await Channel.find({});
-
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels, username: username})
 })
 
 router.get('/delete/:id', validateCookie, async (req, res) => {
@@ -103,34 +100,43 @@ router.get('/delete/:id', validateCookie, async (req, res) => {
     await Channel.findByIdAndDelete(id)
 
     // Update user's list of channels 
-    const userDoc = await User.findOne({email: email})
-    userDoc.channels.splice({id: id}, 1)
-    await userDoc.save()
+    const userQuery = await User.findOne({email: email})
+    // DB Admin 
+    let adminChannels 
+    if (userQuery.isDbAdmin) 
+        adminChannels = await Channel.find({}, 'name id')  
+    else {
+        userQuery.channels.splice({id: id}, 1)
+        await userQuery.save()
+        adminChannels = userQuery[0].channels
+    }
 
     // Get channels
-    const adminChannels = await User.find({email: email}, 'channels')
     const channels = await Channel.find({});
-    
-    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels[0].channels, username: username})
+    res.render('channels.ejs', {channels: channels, adminChannels: adminChannels, username: username})
 })
 
 router.get('/:id', validateCookie, async (req, res) => {
     const token = req.cookies.access_token
     const id = req.params.id
-
-    // Confirm user has access to channel
-    const channelQuery = await Channel.findById(id)
-    const {users} = channelQuery
     const decoded = jwt.verify(token, process.env.SALT)
     const email = decoded.email
     const name = decoded.name 
 
-    if (!users.includes(email))
+    // Get list of users in channel
+    const channelQuery = await Channel.findById(id)
+    const {users} = channelQuery
+
+    // Confirm user has access to channel
+    const userQuery = await User.findOne({email: email})
+    if (userQuery.isDbAdmin) 
+        res.render('channel.ejs', {channel:channelQuery, username: name})
+    
+    else if (!users.includes(email))
         res.send("Unauthorized to access this channel")
     else {
         res.render('channel.ejs', {channel:channelQuery, username: name})
     }
-
 })
 
 module.exports = router
