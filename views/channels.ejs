@@ -1,56 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        <h1>Channels</h1>
-        <form style="position:fixed; top:5%; right:5%" action="/api/user/login" method="GET">
-            <p><%= username %></p>
-            <button type="submit">Logout</button>
-        </form> 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Channels</title>
+  </head>
+  <div class="header">
+    <div class="user-info">
+      <p class="username">Name: <%= username %></p>
+      <form class="logout-button" action="/api/user/login" method="GET">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+  <body>
+    <div class="container">
+      <h1>Channels</h1>
+
+      <ul>
+        <% for(var i=0; i < channels.length; i++) { %>
+        <li>
+          <a href="<%= `/api/channels/${channels[i]._id}` %>"
+            ><%= channels[i].name %></a
+          >
+        </li>
+        <% } %>
+      </ul>
+    </div>
+
+    <div class="container">
+      <h1>Your Channels</h1>
+      <div class="channel-section">
         <ul>
-            <% for(var i=0; i < channels.length; i++) { %>
-                <li>
-                    <a href="<%= `/api/channels/${channels[i]._id}` %>"><%= channels[i].name %></a>
-                </li>
-            <% } %>
-        </ul>
-    </div>
-
-    <div >
-        <h1>Your Channels</h1>
-        <div style="display: inline-block; margin-right: 20%;">
-            <ul>
-                <% for(var i=0; i < adminChannels.length; i++) { %>
-                    <li>
-                        <a style="display: inline-block" href="<%= `/api/channels/${adminChannels[i].id}` %>"><%= adminChannels[i].name %></a>
-                        <form action= "<%= `/api/channels/delete/${adminChannels[i].id}` %>" method="DELETE" style="display: inline-block">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </li>
-                <% } %>
-            </ul>
-        </div>
-        <div style="display: inline-block">
-            <h2 style="margin:0">Create Channel</h2>
-            <form action="/api/channels/create" method="POST">
-                <!-- Name -->
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-
-                 <!-- Users -->
-                 <label for="users">Users</label>
-                 <input type="text" id="users" name="users" placeholder="Ex: john@example.com, doe@example.com">
-                 
-                 <button type="submit">Create</button>
+          <% for(var i=0; i < adminChannels.length; i++) { %>
+          <li>
+            <a href="<%= `/api/channels/${adminChannels[i].id}` %>"
+              ><%= adminChannels[i].name %></a
+            >
+            <form
+              action="<%= `/api/channels/delete/${adminChannels[i].id}` %>"
+              method="DELETE"
+              class="delete-form"
+            >
+              <button type="submit">Delete</button>
             </form>
-        </div>
-
+          </li>
+          <% } %>
+        </ul>
+      </div>
+      <div class="channel-section">
+        <h2>Create a new Channel</h2>
+        <form action="/api/channels/create" method="POST">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+          <label for="users">Users</label>
+          <input
+            type="text"
+            id="users"
+            name="users"
+            placeholder="Ex: john@example.com, doe@example.com"
+          />
+          <button type="submit">Create</button>
+        </form>
+      </div>
     </div>
-    
-</body>
+  </body>
+  <style>
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2f3136;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .username {
+      margin: 0;
+      font-size: 1.2em;
+    }
+
+    body {
+      font-family: "Arial", sans-serif;
+      background-color: #36393f; /* Discord's dark grey */
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1,
+    h2 {
+      color: #7289da; /* Discord's blue */
+      margin-bottom: 20px;
+    }
+
+    .container {
+      background-color: #2f3136; /* Discord's lighter grey */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    .logout-button {
+      background-color: #7289da; /* Discord's blue */
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      display: block; /* makes it easier to style */
+      width: 100px;
+      margin: 10px auto;
+    }
+
+    .logout-button:hover {
+      background-color: #5b6dad;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #40444b;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    a {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    input[type="text"],
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #40444b;
+      color: #ffffff;
+    }
+
+    button {
+      background-color: #7289da; /* Discord's blue */
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #5b6dad;
+    }
+
+    .channel-section {
+      margin-right: 20%;
+    }
+  </style>
 </html>
