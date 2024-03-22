@@ -25,7 +25,7 @@
     <img src="https://github.com/colecody27/instant-messenger/assets/71093271/950ff130-4c65-444f-b8de-f2459b2adb98" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">instant-messenger</h3>
+<h3 align="center">Mumble - Instant Messenger</h3>
 
   <p align="center">
     This is a backend API which facilitates an instant messenger. It utilizes ejs to render web pages, Socket.io to provide client-server connection and updates, and Express as the node.js framework. 
@@ -67,10 +67,15 @@
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
+### Roles 
+<p align="center"> There are three roles for this application: user, channel admin, DB admin. </p>
+<ul>
+  <li>User - This is any user that has only registred and do not have any of their own channels. They have the ability to join channels that they have access to. </li>
+  <li>Channel Admin - This is a user who has created a channel. Once they've created a channel, they can delete it at any point in time. </li>
+  <li>DB Admin - This is a user who has access to the DB. Once logged into the DB, they can update an account to admin by changing a field. This admin can delete any channel, regardless of whether or not they created it. In additoin to this, a channel created by this role will include all of the current users of the application. Allowing any user to join this channel. </li>
+</ul>
 
 ### Built With
-
 - Node.js
 - Express
 - MongoDB
