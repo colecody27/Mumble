@@ -28,7 +28,7 @@
 <h3 align="center">Mumble - Instant Messenger</h3>
 
   <p align="center">
-    This is a backend API which facilitates an instant messenger. It utilizes ejs to render web pages, Socket.io to provide client-server connection and updates, and Express as the node.js framework. 
+    This is a backend API which facilitates an instant messenger. It utilizes ejs to render web pages, Socket.io to provide live updates, and Express as the node.js framework. 
     <br />
     <br />
     <a href="https://instant-messenger-qa99.onrender.com">Visit Live App</a>
