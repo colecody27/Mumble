@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 const Channel = require("./src/models/channel");
-require("dotenv").config({ path: "./config.env" });
+require("dotenv").config()
 
 // Configure application
 const app = express();

@@ -27,13 +27,12 @@ router.get('/', validateCookie, async (req, res) => {
     const channels = await Channel.find({});
 
     // If user is Admin DB, provide exghaustive list of channels. If not, provide list of user's channels
-    const userQuery = await User.find({email: email})
+    const userQuery = await User.findOne({email: email})
     let adminChannels
-    if (userQuery[0].isDbAdmin == true ) 
+    if (userQuery.isDbAdmin == true ) 
         adminChannels = await Channel.find({}, 'name id')  
     else {
-        const query = await User.find({email: email}, 'channels')
-        adminChannels = query[0].channels
+        adminChannels = userQuery.channels
     }
         
     res.render('channels.ejs', {channels: channels, adminChannels: adminChannels, username: username})
@@ -56,7 +55,6 @@ router.post('/create', validateCookie, async (req, res) => {
     const userQuery = await User.findOne({email: email})
     let adminChannels 
     let users
-    console.log("User query:" + userQuery)
     if (userQuery.isDbAdmin){
         users = await User.find({}, 'email')
     }
@@ -83,7 +81,6 @@ router.post('/create', validateCookie, async (req, res) => {
     } else
         adminChannels = await Channel.find({}, 'name id') 
 
-    console.log("Admin channels: " + adminChannels)
     const channels = await Channel.find({});
     res.render('channels.ejs', {channels: channels, adminChannels: adminChannels, username: username})
 })
@@ -106,9 +103,10 @@ router.get('/delete/:id', validateCookie, async (req, res) => {
     if (userQuery.isDbAdmin) 
         adminChannels = await Channel.find({}, 'name id')  
     else {
-        userQuery.channels.splice({id: id}, 1)
+        //userQuery.channels.splice({id: id})
+        userQuery.channels = userQuery.channels.filter((obj) => {return obj.id != id})
         await userQuery.save()
-        adminChannels = userQuery[0].channels
+        adminChannels = userQuery.channels
     }
 
     // Get channels
