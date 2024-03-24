@@ -54,9 +54,12 @@ router.post('/create', validateCookie, async (req, res) => {
     // If user is DB admin, get all users and channels
     const userQuery = await User.findOne({email: email})
     let adminChannels 
-    let users
+    let users = []
     if (userQuery.isDbAdmin){
-        users = await User.find({}, 'email')
+        const tempUsers = await User.find({}, 'email')
+        for (var i = 0; i < tempUsers.length; i++) {
+            users.push(tempUsers[i].email)
+        }
     }
     else {
         users = req.body.users.split(', ')
@@ -123,7 +126,7 @@ router.get('/:id', validateCookie, async (req, res) => {
 
     // Get list of users in channel
     const channelQuery = await Channel.findById(id)
-    const {users} = channelQuery
+    const users = channelQuery.users 
 
     // Confirm user has access to channel
     const userQuery = await User.findOne({email: email})
